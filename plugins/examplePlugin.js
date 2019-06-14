@@ -25,10 +25,6 @@ function onPlayerKilled(attacker, victim, weapon) {
     console.log(attacker.name + " has killed " + victim.name + " with " + weapon);
 }
 
-function onPlayerSuicide(victim, weapon) {
-    console.log(victim.name + " has committed suicide");
-}
-
 function onPlayerJoined(player) {
     console.log(player.name + " has joined the game");
 }
@@ -50,5 +46,4 @@ module.exports = {
     onPlayerJoined,
     onPlayerLeft,
     onPlayerSay,
-    onPlayerSuicide
 };

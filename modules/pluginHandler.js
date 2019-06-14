@@ -3,7 +3,6 @@ let plugins = [];
 let pluginTools = require('./pluginTools');
 
 //TODO read manifest of plugin and log when a plugin is loaded, stopped, ...
-
 function init() {
     for (let plugin of settings.plugins) {
         loadPlugin("../plugins/" + plugin);
@@ -39,6 +38,7 @@ function notifySay(event) {
     }
 }
 
+//TODO: hook this up
 function notifyMapChange(event) {
     for (let plugin of plugins) {
         if (functionExists(plugin.onMapChange)) plugin.onMapChange(event);//var oldmap, var newmap

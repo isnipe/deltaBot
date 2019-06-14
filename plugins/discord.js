@@ -5,12 +5,11 @@ let settings = require("../settings");
 
 let prefix = "!";
 let boundchannel;
-let printkills = false;
 let pluginTools;
 
 
 const discordapi = require('discord.js');
-const client = new discordapi.Client();
+let client = new discordapi.Client();
 
 const manifest = {
     author: "jordi",
@@ -22,35 +21,20 @@ function init(toolKit) {
     pluginTools = toolKit;
     registerClientEvents();
     client.login(settings.discord.token);
-
     return true;
 }
 
 function pause() {
-
-}
-
-function onPlayerKilled(attacker, victim, weapon) {
-    if (boundchannel && printkills) {
-        boundchannel.send("```cs\n'" + attacker.name + "' killed '" + victim.name + "' with '" + weapon + "'```");
-    }
-}
-
-function onPlayerSuicide(victim, weapon) {
-
+    client.destroy();
 }
 
 function onPlayerJoined(player) {
-    setOnlinePlayersInActivity();
-
     if (boundchannel) {
         boundchannel.send("```cs\n'" + player.name + "' has joined the server" + "```");
     }
 }
 
 function onPlayerLeft(player) {
-    setOnlinePlayersInActivity();
-
     if (boundchannel) {
         boundchannel.send("```cs\n'" + player.name + "' has left the server```");
     }
@@ -63,10 +47,10 @@ function onPlayerSay(player, message) {
 }
 
 function resume() {
+    client = new discordapi.Client();
+    client.login(settings.discord.token);
+
 }
-
-
-/////OTHER FUNCTIONS////
 
 function bindToChannel() {
     boundchannel = client.channels.get(settings.discord.channel_id);
@@ -74,41 +58,39 @@ function bindToChannel() {
 
 function handleDiscordCommand(message) {
 
-    if (message.content.startsWith(prefix + "help")) {
-        message.channel.send("I can't do that yet :(");
-    } else if (message.content.startsWith(prefix + "bind")) {
-        boundchannel = message.channel;
-        message.channel.send("I will now log server actions in this channel");
+    let command = message.content.substring(1).split(" ");
+    switch (command[0]) {
 
-    } else if (message.content.startsWith(prefix + "prefix")) {
+        case "help":
+            //TODO: respond with supported commands
+            message.channel.send("I can't do that yet");
+            break;
 
-        var newPrefix = message.content.split(' ')[0];
-        message.channel.send("I will now listen to commands with the " + newPrefix + " prefix");
-        prefix = newPrefix;
+        case "prefix":
+            prefix = command[1];
+            message.channel.send(`I will now listen to command with the ${prefix} prefix`);
+            break;
 
-    } else if (message.content.startsWith(prefix + "map")) {
-        //TODO: RCON-> changeMap(message);
-    } else if (message.content.startsWith(prefix + "status")) {
-        pluginTools.rcon.send("status", response => {
-            boundchannel.send(response.split("print\n")[1]);
-        });
-        //TODO: RCON-> status(message);
-    } else if (message.content.startsWith(prefix + "printkills")) {
-        if (printkills) {
-            printkills = false;
-            message.channel.send("I will no longer print kills");
-        } else {
-            printkills = true;
-            message.channel.send("I will print kills from now on");
-        }
+        case "map":
+            pluginTools.rcon.send("map " + command[1]);
+            message.channel.send(`Map changed to \`${command[1]}\``);
+            break;
+
+        case "status":
+            pluginTools.rcon.send("status", reponse => {
+                message.channel.send(reponse.split("print\n")[1]);
+            });
+            break;
+
+        default:
+            break;
     }
 }
 
+
 function handleDiscordMessage(message) {
-    if (message.channel.id === boundchannel.id) pluginTools.rcon.send('sayraw ^5[Discord] ^7' + message.author.username + ": " + message.content, response => {
-        console.log(response);
-        message.react("✅");
-    });
+    console.log("[DISCORD] " + message.author.username + ": " + message.content);
+    //TODO: use RCon command 'sayraw' to broadcast discord message to game?
 }
 
 function registerClientEvents() {
@@ -125,12 +107,7 @@ function registerClientEvents() {
 
     client.on('ready', () => {
         bindToChannel();
-        setOnlinePlayersInActivity();
     })
-}
-
-function setOnlinePlayersInActivity() {
-    client.user.setActivity(pluginTools.getOnlinePlayers().length === 1 ? "1 player" : pluginTools.getOnlinePlayers().length + " players", {type: "WATCHING"})
 }
 
 module.exports = {
@@ -138,9 +115,7 @@ module.exports = {
     init,
     pause,
     resume,
-    onPlayerKilled,
     onPlayerJoined,
     onPlayerLeft,
     onPlayerSay,
-    onPlayerSuicide
 };

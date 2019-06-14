@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "discord.js": "^11.5.1",
+    "log-timestamp": "^0.3.0",
     "quake3-rcon": "^0.2.1"
   },
   "scripts": {

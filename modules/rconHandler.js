@@ -1,11 +1,11 @@
-const Q3Rcon = require('quake3-rcon');
+const Q3RCon = require('quake3-rcon');
 let settings = require('../settings');
 
 let rcon;
 
 function init() {
 
-    rcon = new Q3Rcon({
+    rcon = new Q3RCon({
         address: settings.rcon.ip,
         port: settings.rcon.port,
         password: settings.rcon.password
@@ -14,6 +14,7 @@ function init() {
 }
 function send(command, callback) {
     console.log("RCon: sent command '" + command + "'");
+    //TODO: figure out why rcon commands get send twice sometimes
     rcon.send(command, callback);
 }
 

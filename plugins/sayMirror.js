@@ -8,9 +8,8 @@ const manifest = {
     description: "mirrors whatever a player has said back into the chat"
 };
 
-function init() {
-    rcon = require("../modules/rconHandler");
-    rcon.init();
+function init(toolKit) {
+    rcon = toolKit.rcon;
     return true;    //return true to indicate startup success
 }
 
@@ -24,26 +23,14 @@ function resume() {
     connsole.log("Plugin resumed!");
 }
 
-function onPlayerKilled(attacker, victim, weapon) {
+function onPlayerSay(player, message){
+    rcon.send(`say ${message}`);
 }
-
-function onPlayerSuicide(victim, weapon) {
-}
-
-function onPlayerJoined(player) {
-}
-
-function onPlayerLeft(player) {
-}
-
 
 module.exports = {
     manifest,
     init,
     pause,
     resume,
-    onPlayerKilled,
-    onPlayerJoined,
-    onPlayerLeft,
-    onPlayerSuicide
+    onPlayerSay
 };

@@ -2,8 +2,6 @@ const fs = require('fs');
 let lastLog;
 let file;
 
-
-
 function init(logFile, callbackOnEvent) {
     file = logFile;
 

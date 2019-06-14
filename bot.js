@@ -1,18 +1,23 @@
+require("log-timestamp");
+
+const version = 0.1;
 const pluginHandler = require("./modules/pluginHandler");
 const eventParser = require("./modules/eventParser");
 const logParser = require("./modules/logParser"); // ''; //absolute path to logfile
-const settings = require("./settings");
 const rconHandler = require("./modules/rconHandler");
+const settings = require("./settings");
 
 function init() {
+    console.log("deltaBot v" + version);
     //Check if the server is running and accessible by RCon before doing anything else
+    console.log("Initializing rconHandler");
     rconHandler.init();
     rconHandler.send("status", response => checkRconConnection(response));
 }
 
 function checkRconConnection(response) {
     if (response.startsWith("print")) {
-        console.log("RCon connection successfull")
+        console.log("RCon connection successfully established")
 
         pluginHandler.pluginTools.rcon = rconHandler;
         finishStartup();
@@ -22,8 +27,11 @@ function checkRconConnection(response) {
 }
 
 function finishStartup() {
+    console.log("Initializing pluginHandler");
     pluginHandler.init();
+    console.log(`Initializing logParser for log '${settings.general.logfile}'`);
     logParser.init(settings.general.logfile, eventParser.handleEvent);
+    console.log("Initializing eventParser");
     eventParser.init(pluginHandler);
 }
 
