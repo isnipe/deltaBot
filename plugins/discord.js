@@ -13,6 +13,7 @@ let client = new discordapi.Client();
 
 const manifest = {
     author: "jordi",
+    name: "discord",
     version: 1.0,
     description: "Discord plugin for deltaBot"
 };
@@ -68,7 +69,7 @@ function handleDiscordCommand(message) {
 
         case "prefix":
             prefix = command[1];
-            message.channel.send(`I will now listen to command with the ${prefix} prefix`);
+            message.channel.send(`I will now listen to commands with the ${prefix} prefix`);
             break;
 
         case "map":
@@ -77,8 +78,8 @@ function handleDiscordCommand(message) {
             break;
 
         case "status":
-            pluginTools.rcon.send("status", reponse => {
-                message.channel.send(reponse.split("print\n")[1]);
+            pluginTools.rcon.send("status", response => {
+                message.channel.send(response.split("print\n")[1]);
             });
             break;
 

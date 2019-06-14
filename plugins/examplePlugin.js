@@ -2,6 +2,7 @@
 
 const manifest = {
     author: "jordi",
+    name: "example",
     version: 1.0,
     description: "example plugin for deltaBot"
 };

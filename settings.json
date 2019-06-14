@@ -1,18 +1,29 @@
 {
   "general": {
-    "logfile": "/Users/jordi/documents/dedi/mods/isnipe^14/logs/games_mp.log"
+    "logfile": "Z:\\mods\\isnipe^14\\logs\\games_mp.log"
   },
+
   "rcon": {
     "ip": "127.0.0.1",
     "port": 28961,
     "password": "rcon_password"
   },
+
   "plugins": [
     "examplePlugin",
-    "sayMirror"
+    "discord",
+    "database"
   ],
+
   "discord": {
-    "token": "discord_auth_token",
-    "channel_id": "discord_channel_id"
+    "token": "XXX",
+    "channel_id": "XXX"
+  },
+
+  "database": {
+    "host": "localhost",
+    "user": "admin",
+    "password": "password",
+    "database": "mydatabase"
   }
 }

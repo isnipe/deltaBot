@@ -4,8 +4,9 @@ let rcon;
 
 const manifest = {
     author: "jordi",
+    name: "sayMirror",
     version: 1.0,
-    description: "mirrors whatever a player has said back into the chat"
+    description: "Example plugin: mirrors whatever a player has said back into the chat"
 };
 
 function init(toolKit) {
