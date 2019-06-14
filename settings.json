@@ -1,0 +1,18 @@
+{
+  "general": {
+    "logfile": "/Users/jordi/documents/dedi/mods/isnipe^14/logs/games_mp.log"
+  },
+  "rcon": {
+    "ip": "127.0.0.1",
+    "port": 28961,
+    "password": "rcon_password"
+  },
+  "plugins": [
+    "examplePlugin",
+    "sayMirror"
+  ],
+  "discord": {
+    "token": "discord_auth_token",
+    "channel_id": "discord_channel_id"
+  }
+}

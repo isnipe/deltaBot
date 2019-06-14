@@ -1,0 +1,17 @@
+{
+  "name": "deltaBot",
+  "version": "1.0.0",
+  "description": "Administration bot for IW4x",
+  "main": "bot.js",
+  "private": true,
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "quake3-rcon": "^0.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
