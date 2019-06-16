@@ -1,21 +1,38 @@
-const Q3RCon = require('quake3-rcon');
-let settings = require('../settings');
+const settings = require("../settings");
 
-let rcon;
+let ip = settings.rcon.ip;
+let port = settings.rcon.port;
+let password = settings.rcon.password;
+let dgram = require("dgram");
+let client;
 
-function init() {
+function send(command, callback) {
+    client = dgram.createSocket("udp4");
 
-    rcon = new Q3RCon({
-        address: settings.rcon.ip,
-        port: settings.rcon.port,
-        password: settings.rcon.password
+    client.on("message", message => callback(message.toString("utf8").trim().substr(4)));
+    client.on("err", err => console.log(err));
+    client.on("close", function () {
+        console.log("RCon connection closed")
     });
 
-}
-function send(command, callback) {
-    console.log("RCon: sent command '" + command + "'");
-    //TODO: figure out why rcon commands get send twice sometimes
-    rcon.send(command, callback);
+    let buffer = getBuffer(command);
+    client.send(buffer, 0, buffer.length, port, ip);
 }
 
-module.exports = {init, send};
+function close() {
+    client.close();
+}
+
+function getBuffer(command) {
+    let buffer = new Buffer.alloc(11 + password.length + command.length);
+    buffer.writeUInt32LE(0xFFFFFFFF, 0);
+    buffer.write('rcon ', 4);
+    buffer.write(password, 9, password.length);
+    buffer.write(' ', 9 + password.length, 1);
+    buffer.write(command, 10 + password.length, command.length);
+    buffer.write('\n', 10 + password.length + command.length, 1);
+
+    return buffer;
+}
+
+module.exports = {send, close};

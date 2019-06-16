@@ -7,23 +7,5 @@
     "ip": "127.0.0.1",
     "port": 28961,
     "password": "rcon_password"
-  },
-
-  "plugins": [
-    "examplePlugin",
-    "discord",
-    "database"
-  ],
-
-  "discord": {
-    "token": "XXX",
-    "channel_id": "XXX"
-  },
-
-  "database": {
-    "host": "localhost",
-    "user": "admin",
-    "password": "password",
-    "database": "mydatabase"
   }
 }

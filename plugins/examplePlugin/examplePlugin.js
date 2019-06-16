@@ -1,14 +1,6 @@
 /*Example plugin for deltaBot*/
 
-const manifest = {
-    author: "jordi",
-    name: "example",
-    version: 1.0,
-    description: "example plugin for deltaBot"
-};
-
-function init() {
-    console.log("Example plugin started");
+function init(plugin) {
     return true;    //return true to indicate startup success
 }
 
@@ -39,7 +31,6 @@ function onPlayerSay(player, message) {
 }
 
 module.exports = {
-    manifest,
     init,
     pause,
     resume,

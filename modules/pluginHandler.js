@@ -1,22 +1,77 @@
-let settings = require("../settings");
-let plugins = [];
-let pluginTools = require('./pluginTools');
+const fs = require("fs");
 
-//TODO read manifest of plugin and log when a plugin is loaded, stopped, ...
+let pluginTools = require("./pluginTools");
+let plugins = [];
+
+//TODO add ability to pause, resume and stop plugins
 function init() {
-    for (let plugin of settings.plugins) {
-        loadPlugin("../plugins/" + plugin);
+    //get all directories in the ./plugins directory
+    let directories = fs.readdirSync("./plugins/").filter(function (file) {
+        return fs.statSync('./plugins/' + file).isDirectory();
+    })
+
+    for (let directory of directories) {
+        let plugin = getPlugin(directory);
+        if (plugin) {
+            if (loadPlugin(plugin)) {
+                plugins.push(plugin);
+            } else {
+                console.error(`pluginHandler: ${directory} will not be loaded. It is disabled or misconfigured`);
+            }
+        } else {
+            console.error(`pluginHandler: Error while attempting to load plugin ${directory}`);
+        }
     }
 }
 
-function loadPlugin(script) {
-    let plugin = require(script);
-    if (plugin.init(pluginTools)) plugins.push(plugin);
+function getPlugin(directory) {
+
+    if (fs.existsSync(`./plugins/${directory}/settings.json`)) {
+        //plugin settings found, read it to determine which script to load
+        let _settings = require(`../plugins/${directory}/settings.json`);
+
+        if (fs.existsSync(`./plugins/${directory}/${_settings.manifest.main}`)) {
+            //main script was found, load it
+
+            //TODO: add dependency check and install
+            return {
+                settings: _settings,
+                script: require(`../plugins/${directory}/${_settings.manifest.main}`),
+                tools: pluginTools,
+                running: false
+            };
+
+        } else {
+            //main script not found, plugin can not be loaded
+            console.error(`pluginHandler: main script for plugin ${directory} was not found`);
+            return null;
+        }
+
+    } else {
+        //settings not found, plugin can not be loaded
+        console.error(`pluginHandler: settings.json for plugin ${directory} was not found`);
+        return null;
+    }
+
+}
+
+function loadPlugin(plugin) {
+
+    if (plugin.settings.manifest.enabled) {
+        if (plugin.script.init(plugin)) {
+            plugins.push(plugin);
+            console.log(`pluginHandler: ${plugin.settings.manifest.name} v${plugin.settings.manifest.version} succesfully started`);
+            plugin.running = true;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function notifyKill(event) {
     for (let plugin of plugins) {
-       if(functionExists(plugin.onPlayerKilled)) plugin.onPlayerKilled(event.attacker, event.victim, event.weapon);
+        if (functionExists(plugin.onPlayerKilled)) plugin.onPlayerKilled(event.attacker, event.victim, event.weapon);
     }
 }
 
@@ -28,7 +83,7 @@ function notifyJoin(event) {
 
 function notifyQuit(event) {
     for (let plugin of plugins) {
-       if(functionExists(plugin.onPlayerLeft)) plugin.onPlayerLeft(event.player);
+        if (functionExists(plugin.onPlayerLeft)) plugin.onPlayerLeft(event.player);
     }
 }
 

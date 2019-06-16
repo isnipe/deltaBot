@@ -1,22 +1,14 @@
-const settings = require("../settings");
 let mysql = require("mysql");
 let connection;
 
 //TODO: finish up this plugin. It is not ready yet.
 
-const manifest = {
-    author: "jordi",
-    name: "database",
-    version: 1.0,
-    description: "Database plugin for deltaBot.\nThis plugin will write data to a mysql database"
-};
-
-function init() {
+function init(plugin) {
     connection = mysql.createConnection({
-        host: settings.database.host,
-        user: settings.database.user,
-        password: settings.database.password,
-        database: settings.database.database
+        host: plugin.settings.host,
+        user: plugin.settings.user,
+        password: plugin.settings.password,
+        database: plugin.settings.database
     });
 
     connection.connect();
@@ -58,7 +50,6 @@ function onPlayerSay(player, message) {
 }
 
 module.exports = {
-    manifest,
     init,
     pause,
     resume,

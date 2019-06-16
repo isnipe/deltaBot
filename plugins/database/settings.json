@@ -1,0 +1,17 @@
+{
+  "manifest": {
+    "name": "database",
+    "author": "jordi",
+    "version": "1.0.0",
+    "description": "MySQL database connectivity plugin",
+    "main": "database.js",
+    "enabled": true,
+    "dependencies": {
+      "mysql": "^2.17.1"
+    }
+  },
+  "host": "localhost",
+  "user": "admin",
+  "password": "password",
+  "database": "mydatabase"
+}

@@ -1,27 +1,17 @@
 /*Example plugin for deltaBot that integrates the discord api
 * to print out data to a certain discord channel*/
-
-let settings = require("../settings");
+const discordapi = require('discord.js');
 
 let prefix = "!";
 let boundchannel;
-let pluginTools;
+let plugin;
 
 
-const discordapi = require('discord.js');
-let client = new discordapi.Client();
-
-const manifest = {
-    author: "jordi",
-    name: "discord",
-    version: 1.0,
-    description: "Discord plugin for deltaBot"
-};
-
-function init(toolKit) {
-    pluginTools = toolKit;
+function init(_plugin) {
+    plugin = _plugin;
+    client = new discordapi.Client();
     registerClientEvents();
-    client.login(settings.discord.token);
+    client.login(plugin.settings.token);
     return true;
 }
 
@@ -49,12 +39,12 @@ function onPlayerSay(player, message) {
 
 function resume() {
     client = new discordapi.Client();
-    client.login(settings.discord.token);
+    client.login(plugin.settings.token);
 
 }
 
 function bindToChannel() {
-    boundchannel = client.channels.get(settings.discord.channel_id);
+    boundchannel = client.channels.get(plugin.settings.channel_id);
 }
 
 function handleDiscordCommand(message) {
@@ -73,12 +63,17 @@ function handleDiscordCommand(message) {
             break;
 
         case "map":
-            pluginTools.rcon.send("map " + command[1]);
-            message.channel.send(`Map changed to \`${command[1]}\``);
+            plugin.tools.rcon.send("map " + command[1], response => {
+                if (response.startsWith("print\nUnloaded fastfile")) {
+                    message.channel.send(`Map changed to \`${command[1]}\``);
+                } else {
+                    message.channel.send("Something went wrong while attempting to change maps.");
+                }
+            });
             break;
 
         case "status":
-            pluginTools.rcon.send("status", response => {
+            plugin.tools.rcon.send("status", response => {
                 message.channel.send(response.split("print\n")[1]);
             });
             break;
@@ -90,8 +85,11 @@ function handleDiscordCommand(message) {
 
 
 function handleDiscordMessage(message) {
-    console.log("[DISCORD] " + message.author.username + ": " + message.content);
-    //TODO: use RCon command 'sayraw' to broadcast discord message to game?
+    console.log("[DISCORD CHAT] " + message.author.username + ": " + message.content);
+    /*  TODO: use RCon command 'sayraw' to broadcast discord message to game?
+    *   IW4x RCon protocol is bugged. (confirmed by IW4x staff member)
+    *   Sometimes RCon commands gets executed twice,
+    *   thus making is impossible to add this feature for the time being*/
 }
 
 function registerClientEvents() {

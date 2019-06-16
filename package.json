@@ -7,11 +7,10 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "log-timestamp": "^0.3.0",
-    "mysql": "^2.17.1",
-    "quake3-rcon": "^0.2.1"
+    "mysql": "^2.17.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run": "node bot.js --fix-dependencies && npm i && node bot.js --run"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,10 @@
+{
+  "manifest": {
+    "name": "examplePlugin",
+    "author": "jordi",
+    "version": "1.0.0",
+    "description": "An example plugin for deltaBot that logs server events to the console",
+    "main": "examplePlugin.js",
+    "enabled": true
+  }
+}
